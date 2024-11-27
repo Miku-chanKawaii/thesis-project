@@ -2,6 +2,8 @@ import PocketBase from 'pocketbase';
 
 export const pb = new PocketBase('http://127.0.0.1:8090');
 
+pb.admins.authWithPassword('huyb1809694@student.ctu.edu.vn', 'hatsunemiku');
+
 // Auth helpers
 export const isUserValid = () => pb.authStore.isValid;
 export const getCurrentUser = () => pb.authStore.model;

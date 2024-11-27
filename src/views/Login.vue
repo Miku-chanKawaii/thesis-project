@@ -12,7 +12,7 @@ const password = ref('');
 async function handleSubmit() {
   try {
     await login(email.value, password.value);
-    router.push('/dashboard');
+    router.push('/');
   } catch (err) {
     // Error is handled by useAuth composable
   }

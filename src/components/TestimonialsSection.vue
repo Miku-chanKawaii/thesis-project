@@ -8,7 +8,7 @@ const testimonials = [
   },
   {
     name: "Mike Chen",
-    role: "Course Creator",
+    role: "Writer",
     content: "The simplicity and power of this platform is unmatched. Highly recommended!",
     avatar: "👨"
   },
