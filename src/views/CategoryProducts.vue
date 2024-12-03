@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useCategories } from '../composables/useCategories';
 import { useProducts } from '../composables/useProducts';
@@ -7,9 +7,15 @@ import ProductCard from '../components/ProductCard.vue';
 
 const route = useRoute();
 const { getCategoryById } = useCategories();
-const { items: products, isLoading, error, fetchProducts } = useProducts();
+const { items: allProducts, isLoading, error, fetchProducts } = useProducts();
 
 const category = getCategoryById(route.params.category);
+
+// Filter products by category
+const products = computed(() => {
+  if (!allProducts.value) return [];
+  return allProducts.value.filter(product => product.category === route.params.category);
+});
 
 onMounted(() => {
   fetchProducts();

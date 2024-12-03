@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
-import { isUserValid } from '../lib/pocketbase';
+import { useAuth } from '../composables/useAuth';
+
+const { isAuthenticated } = useAuth();
 
 const routes = [
   {
@@ -24,6 +26,16 @@ const routes = [
     path: '/discover',
     name: 'Discover',
     component: () => import('../views/Discover.vue'),
+  },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('../views/Search.vue'),
+  },
+  {
+    path: '/cart',
+    name: 'Cart',
+    component: () => import('../views/Cart.vue'),
   },
   {
     path: '/discover/:category',
@@ -56,6 +68,18 @@ const routes = [
         path: 'products/new',
         name: 'NewProduct',
         component: () => import('../views/user/NewProduct.vue'),
+      },
+      {
+        path: 'products/:id/edit',
+        name: 'EditProduct',
+        component: () => import('../views/user/EditProduct.vue'),
+        props: true,
+      },
+      {
+        path: 'products/:id/content',
+        name: 'ProductContent',
+        component: () => import('../views/user/ProductContent.vue'),
+        props: true,
       },
       {
         path: 'sales',
@@ -93,7 +117,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = isUserValid();
 
   // Handle auth required routes
   if (to.meta.requiresAuth && !isAuthenticated) {

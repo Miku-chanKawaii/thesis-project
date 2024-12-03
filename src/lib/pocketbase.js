@@ -2,11 +2,9 @@ import PocketBase from 'pocketbase';
 
 export const pb = new PocketBase('http://127.0.0.1:8090');
 
-pb.admins.authWithPassword('huyb1809694@student.ctu.edu.vn', 'hatsunemiku');
+//pb.admins.authWithPassword('huyb1809694@student.ctu.edu.vn', 'hatsunemiku');
+//pb.collection('users').authWithPassword('test@example.com', 'testtest');
 
-// Auth helpers
-export const isUserValid = () => pb.authStore.isValid;
-export const getCurrentUser = () => pb.authStore.model;
 
 // Collection helpers
 export const products = {
@@ -27,10 +25,10 @@ export const products = {
 
 export const creators = {
   async getProfile(id) {
-    return await pb.collection('creators').getOne(id);
+    return await pb.collection('users').getOne(id);
   },
   
   async update(id, data) {
-    return await pb.collection('creators').update(id, data);
+    return await pb.collection('users').update(id, data);
   }
 };

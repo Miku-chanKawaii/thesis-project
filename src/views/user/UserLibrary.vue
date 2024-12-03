@@ -1,9 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useLibrary } from '../../composables/useLibrary';
-import ProductCard from '../../components/ProductCard.vue';
 
+const router = useRouter();
 const { items: purchases, isLoading, error, fetchPurchases } = useLibrary();
+
+function viewContent(productId) {
+  router.push({ 
+    name: 'ProductContent', 
+    params: { id: productId } 
+  });
+}
 
 onMounted(() => {
   fetchPurchases();
@@ -32,12 +40,35 @@ onMounted(() => {
       </router-link>
     </div>
 
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <ProductCard 
+    <div v-else class="space-y-4">
+      <div 
         v-for="product in purchases" 
-        :key="product.id" 
-        :product="product" 
-      />
+        :key="product.id"
+        class="bg-white rounded-lg shadow-sm overflow-hidden"
+      >
+        <div class="p-6">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-4">
+              <img 
+                v-if="product.thumbnail"
+                :src="product.thumbnail"
+                :alt="product.name"
+                class="w-16 h-16 object-cover rounded-lg"
+              />
+              <div>
+                <h3 class="font-medium text-gray-900">{{ product.name }}</h3>
+                <p class="text-sm text-gray-500">{{ product.description }}</p>
+              </div>
+            </div>
+            <button
+              @click="viewContent(product.id)"
+              class="text-primary hover:text-opacity-80"
+            >
+              View Content
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

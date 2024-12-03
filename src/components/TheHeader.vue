@@ -2,8 +2,8 @@
 import { ref } from 'vue'
 import { useAuth } from '../composables/useAuth';
 
-const { logout, isAuthenticated } = useAuth()
-const isMenuOpen = ref(false)
+const { logout, isAuthenticated } = useAuth();
+const isMenuOpen = ref(false);
 
 </script>
 
@@ -14,6 +14,8 @@ const isMenuOpen = ref(false)
         <a href="/" class="text-2xl font-bold">Gum</a>
         <div class="hidden md:flex space-x-6">
           <router-link to="/discover" class="text-gray-600 hover:text-black">Discover</router-link>
+          <router-link to="/search" class="text-gray-600 hover:text-black">Search</router-link>
+          <router-link to="/cart" class="text-gray-600 hover:text-black">Cart</router-link>
         </div>
       </div>
       
@@ -47,6 +49,7 @@ const isMenuOpen = ref(false)
       </div>
       <div v-else class="px-4 py-2 space-y-2">
         <router-link to="/discover" class="block text-gray-600 hover:text-black">Discover</router-link>
+        <router-link to="/search" class="text-gray-600 hover:text-black">Search</router-link>
         <router-link to="/login" class="block text-gray-600 hover:text-black">Login</router-link>
         <router-link to="/register" class="block bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 text-center">
           Start Selling

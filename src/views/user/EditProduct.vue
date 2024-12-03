@@ -1,46 +1,47 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useProducts } from '../../composables/useProducts';
 import ProductBasicInfo from '../../components/product/ProductBasicInfo.vue';
 import ProductContent from '../../components/product/ProductContent.vue';
 
+const route = useRoute();
 const router = useRouter();
-const { createProduct, isLoading, error } = useProducts();
+const { getProduct, updateProduct, isLoading, error } = useProducts();
 
 const activeTab = ref('basic');
-const productData = ref({
-  name: '',
-  catalogue: '',
-  description: '',
-  price: 0,
-  thumbnail: null,
-  content: {
-    files: [],
-    description: '',
-  },
-});
+const productData = ref(null);
+
+async function loadProduct() {
+  try {
+    productData.value = await getProduct(route.params.id);
+  } catch (err) {
+    router.push({ name: 'NotFound' });
+  }
+}
 
 async function handleSubmit() {
   try {
-    await createProduct(productData.value);
+    await updateProduct(route.params.id, productData.value);
     router.push({ name: 'UserProducts' });
   } catch (err) {
     // Error handled by useProducts composable
   }
 }
+
+onMounted(loadProduct);
 </script>
 
 <template>
-  <div class="space-y-6">
+  <div v-if="productData" class="space-y-6">
     <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">New Product</h1>
+      <h1 class="text-2xl font-bold text-gray-900">Edit Product</h1>
       <button
         @click="handleSubmit"
         :disabled="isLoading"
         class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-opacity-90 disabled:opacity-50"
       >
-        {{ isLoading ? 'Creating...' : 'Create Product' }}
+        {{ isLoading ? 'Saving...' : 'Save Changes' }}
       </button>
     </div>
 
@@ -87,5 +88,9 @@ async function handleSubmit() {
         v-model="productData.content"
       />
     </div>
+  </div>
+
+  <div v-else class="text-center py-12">
+    <div class="text-gray-500">Loading product...</div>
   </div>
 </template>

@@ -31,7 +31,7 @@ export function useSales() {
     try {
       const response = await pb.collection('sales').getList(1, 50, {
         sort: '-created',
-        expand: 'product,buyer',
+        expand: 'user,product,buyer',
       });
       sales.value = response.items;
     } catch (err) {

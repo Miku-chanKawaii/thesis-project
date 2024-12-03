@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { pb } from '../lib/pocketbase';
+import { userId } from './useID';
 
 export function useLibrary() {
   const items = ref([]);
@@ -15,7 +16,12 @@ export function useLibrary() {
         sort: '-created',
         expand: 'product',
       });
-      items.value = response.items;
+      items.value = response.items
+        .filter(item => item.user === userId)
+        .map(item => ({
+          name: item.expand.product.name,
+          description: item.expand.product.description,
+        }));
     } catch (err) {
       error.value = err.message;
     } finally {

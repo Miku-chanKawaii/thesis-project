@@ -41,6 +41,13 @@ const price = computed({
   }
 });
 
+const category = computed({
+  get: () => props.modelValue.category,
+  set: (value) => {
+    emit('update:modelValue', { ...props.modelValue, category: value });
+  }
+});
+
 function handleThumbnailChange(event) {
   const file = event.target.files[0];
   if (file) {
@@ -73,6 +80,24 @@ function handleThumbnailChange(event) {
           class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-opacity-90"
         />
       </div>
+    </div>
+
+    <!-- Category -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Category</label>
+      <select
+        v-model="category"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
+      >
+        <option value="">Select a category</option>
+        <option
+          v-for="cat in categories"
+          :key="cat.id"
+          :value="cat.id"
+        >
+          {{ cat.name }}
+        </option>
+      </select>
     </div>
 
     <!-- Name -->
