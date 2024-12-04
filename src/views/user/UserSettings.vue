@@ -14,6 +14,7 @@ const form = ref({
 });
 
 const avatar = ref(null);
+const avatarPreview = ref(null); 
 const isLoading = ref(false);
 const error = ref(null);
 const success = ref(null);
@@ -76,6 +77,15 @@ async function handlePasswordUpdate() {
     isLoading.value = false;
   }
 }
+
+// Handle file change and set image preview
+function handleFileChange(event) {
+  const file = event.target.files[0];
+  if (file) {
+    avatar.value = file;
+    avatarPreview.value = URL.createObjectURL(file); // Set the preview
+  }
+}
 </script>
 
 <template>
@@ -97,14 +107,14 @@ async function handlePasswordUpdate() {
           <label class="block text-sm font-medium text-gray-700">Avatar</label>
           <div class="mt-1 flex items-center space-x-4">
             <img 
-              :src="user?.avatar || 'https://via.placeholder.com/128'" 
+              :src="avatarPreview  || 'https://via.placeholder.com/128'" 
               alt="Avatar"
               class="w-16 h-16 rounded-full object-cover"
             />
             <input 
               type="file" 
               accept="image/*"
-              @change="e => avatar = e.target.files[0]"
+              @change="handleFileChange"
               class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-opacity-90"
             />
           </div>

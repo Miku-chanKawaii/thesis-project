@@ -10,6 +10,7 @@
     "pb:start": "node scripts/startPocketbase.js"
   },
   "dependencies": {
+    "@tailwindcss/container-queries": "^0.1.1",
     "@vueuse/core": "^10.7.0",
     "pocketbase": "^0.20.1",
     "vue": "^3.5.13",
@@ -17,6 +18,8 @@
   },
   "devDependencies": {
     "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
     "@vitejs/plugin-vue": "^5.2.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31",

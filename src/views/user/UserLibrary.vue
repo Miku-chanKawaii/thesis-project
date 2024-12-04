@@ -12,7 +12,7 @@ function viewContent(productId) {
     params: { id: productId } 
   });
 }
-
+console.log('lib',purchases);
 onMounted(() => {
   fetchPurchases();
 });

@@ -15,9 +15,11 @@ export function useLibrary() {
       const response = await pb.collection('purchases').getList(1, 50, {
         sort: '-created',
         expand: 'product',
+        filter: `user = "${userId.value}"`,
       });
+      console.log('user ',userId.value);
+      console.log('use ',response.items);
       items.value = response.items
-        .filter(item => item.user === userId)
         .map(item => ({
           name: item.expand.product.name,
           description: item.expand.product.description,

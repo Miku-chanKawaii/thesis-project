@@ -1,8 +1,10 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useProducts } from '../../composables/useProducts';
 import ProductCard from '../../components/ProductCard.vue';
+import { pb } from '../../lib/pocketbase';
+
 
 const router = useRouter();
 const { items: products, isLoading, error, fetchProducts } = useProducts();
@@ -10,6 +12,14 @@ const { items: products, isLoading, error, fetchProducts } = useProducts();
 function handleNewProduct() {
   router.push({ name: 'NewProduct' });
 }
+console.log('product ',products);
+console.log('id', pb.authStore.model);
+
+// Filter products by user Id
+const filteredproducts = computed(() => {
+  if (!products.value) return [];
+  return products.value.filter(product => product.creator === pb.authStore.model.id);
+});
 
 onMounted(() => {
   fetchProducts();
@@ -48,7 +58,7 @@ onMounted(() => {
 
     <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <ProductCard 
-        v-for="product in products" 
+        v-for="product in filteredproducts" 
         :key="product.id" 
         :product="product" 
       />

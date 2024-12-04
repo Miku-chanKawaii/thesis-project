@@ -1,9 +1,11 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue';
 import { useAuth } from '../composables/useAuth';
+import { pb } from '../lib/pocketbase';
 
-const { logout, isAuthenticated } = useAuth();
+const { logout } = useAuth();
 const isMenuOpen = ref(false);
+
 
 </script>
 
@@ -11,7 +13,7 @@ const isMenuOpen = ref(false);
   <header class="border-b border-gray-200">
     <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center space-x-8">
-        <a href="/" class="text-2xl font-bold">Gum</a>
+        <router-link to="/" class="text-2xl font-bold">Gum</router-link>
         <div class="hidden md:flex space-x-6">
           <router-link to="/discover" class="text-gray-600 hover:text-black">Discover</router-link>
           <router-link to="/search" class="text-gray-600 hover:text-black">Search</router-link>
@@ -19,15 +21,11 @@ const isMenuOpen = ref(false);
         </div>
       </div>
       
-      <div v-if="isAuthenticated" class="hidden md:flex items-center space-x-4">
-        <a href="/" @click="logout" class="text-gray-600 hover:text-black">Logout</a>
+      <div class="hidden md:flex items-center space-x-4">
+        <router-link v-if="!pb.authStore.isValid" to="/login" class="text-gray-600 hover:text-black">Login</router-link>
+        <router-link v-if="!pb.authStore.isValid" to="/register" class="text-gray-600 hover:text-black">Register</router-link>
+        <router-link v-if="pb.authStore.isValid" @click="logout" to="/login" class="text-gray-600 hover:text-black">Logout</router-link>
         <router-link to="/user" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90">
-          Home
-        </router-link>
-      </div>
-      <div v-else class="hidden md:flex items-center space-x-4">
-        <router-link to="/login" class="text-gray-600 hover:text-black">Login</router-link>
-        <router-link to="/register" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90">
           Start Selling
         </router-link>
       </div>
@@ -40,18 +38,12 @@ const isMenuOpen = ref(false);
     </nav>
 
     <div v-if="isMenuOpen" class="md:hidden">
-      <div v-if="isAuthenticated" class="px-4 py-2 space-y-2">
+      <div class="px-4 py-2 space-y-2">
         <router-link to="/discover" class="block text-gray-600 hover:text-black">Discover</router-link>
-        <a href="/" @click="logout" class="block text-gray-600 hover:text-black">Logout</a>
+        <router-link to="/search" class="block text-gray-600 hover:text-black">Search</router-link>
+        <router-link v-if="!pb.authStore.isValid" to="/login" class="block text-gray-600 hover:text-black">Login</router-link>
+        <button v-if="pb.authStore.isValid" @click="logout" class="block text-gray-600 hover:text-black">Logout</button>
         <router-link to="/user" class="block bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 text-center">
-          Home
-        </router-link>
-      </div>
-      <div v-else class="px-4 py-2 space-y-2">
-        <router-link to="/discover" class="block text-gray-600 hover:text-black">Discover</router-link>
-        <router-link to="/search" class="text-gray-600 hover:text-black">Search</router-link>
-        <router-link to="/login" class="block text-gray-600 hover:text-black">Login</router-link>
-        <router-link to="/register" class="block bg-primary text-white px-6 py-2 rounded-full hover:bg-opacity-90 text-center">
           Start Selling
         </router-link>
       </div>

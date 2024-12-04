@@ -11,6 +11,7 @@ export const products = {
   async getAll() {
     return await pb.collection('products').getList(1, 50, {
       sort: '-created',
+      expand: 'creator, content',
     });
   },
   

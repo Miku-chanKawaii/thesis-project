@@ -1,6 +1,5 @@
 import { ref, computed } from 'vue';
 import { pb } from '../lib/pocketbase';
-import { userId } from './useID';
 
 export function useAuth() {
   const isLoading = ref(false);
@@ -16,8 +15,9 @@ export function useAuth() {
     error.value = null;
     
     try {
-      const authData = await pb.collection('users').authWithPassword(email, password);
-      userId.value = authData.record.id;
+      localStorage.removeItem('pocketbase_auth');
+      console.log('Invalid PocketBase auth token cleared from localStorage.');
+      await pb.collection('users').authWithPassword(email, password);
     } catch (err) {
       error.value = err.message;
     } finally {
@@ -48,8 +48,61 @@ export function useAuth() {
   // Function to log out the user
   function logout() {
     pb.authStore.clear();
-    userId.value = null;
     router.push({ name: 'Login' });
+  }
+
+  // Function to update the user profile
+  async function updateProfile({ name, biography, avatar }) {
+    if (!isAuthenticated.value) return;
+    
+    isLoading.value = true;
+    error.value = null;
+    
+    try {
+      const updatedUser = {
+        name,
+        biography,
+        avatar,
+      };
+      
+      await pb.collection('users').update(user.value.id, updatedUser);
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Function to update the user email
+  async function updateEmail(newEmail) {
+    if (!isAuthenticated.value) return;
+
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      await pb.collection('users').update(user.value.id, { email: newEmail });
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Function to update the user password
+  async function updatePassword(currentPassword, newPassword) {
+    if (!isAuthenticated.value) return;
+
+    isLoading.value = true;
+    error.value = null;
+
+    try {
+      await pb.collection('users').update(user.value.id, { password: newPassword }, { currentPassword });
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    }
   }
   
   return {
@@ -60,5 +113,8 @@ export function useAuth() {
     login,
     register,
     logout,
+    updateProfile,
+    updateEmail,
+    updatePassword,
   };
 }

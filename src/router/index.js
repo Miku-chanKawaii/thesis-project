@@ -123,11 +123,6 @@ router.beforeEach((to, from, next) => {
     return next({ name: 'Login', query: { redirect: to.fullPath } });
   }
 
-  // Handle guest only routes (login/register)
-  if (to.meta.guestOnly && isAuthenticated) {
-    return next({ name: 'UserHome' });
-  }
-
   next();
 });
 
