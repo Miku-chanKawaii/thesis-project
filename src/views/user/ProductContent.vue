@@ -2,20 +2,25 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProducts } from '../../composables/useProducts';
+import { pb } from '../../lib/pocketbase';
 
 const route = useRoute();
 const router = useRouter();
-const { getProduct, isLoading, error } = useProducts();
+const { isLoading, error } = useProducts();
+const baseUrl = 'http://127.0.0.1:8090/api/files/';
 
 const product = ref(null);
 
 async function loadProduct() {
   try {
-    product.value = await getProduct(route.params.id);
+    product.value = await pb.collection('products').getOne('do34efk0fb31xuw', {
+      expand: 'content'
+    });
   } catch (err) {
     router.push({ name: 'NotFound' });
   }
 }
+
 
 onMounted(loadProduct);
 </script>
@@ -47,18 +52,14 @@ onMounted(loadProduct);
           <!-- Content Files -->
           <div class="p-6 border-b border-gray-200">
             <h2 class="text-lg font-medium text-gray-900 mb-4">Content Files</h2>
-            <div v-if="product.content?.files?.length" class="space-y-3">
-              <div
-                v-for="(file, index) in product.content.files"
-                :key="index"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-              >
+            <div v-if="product.expand.content" class="space-y-3">
+              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex items-center space-x-3">
-                  <span class="text-gray-500">📄</span>
-                  <span class="text-sm text-gray-900">{{ file.name }}</span>
+                  <span class="text-gray-500">📦</span>
+                  <span class="text-sm text-gray-900">{{ product.expand.content.file }}</span>
                 </div>
                 <a
-                  :href="file.url"
+                  :href="`${baseUrl}content/${product.expand.content.id}/${product.expand.content.file}`"
                   download
                   class="text-primary hover:text-opacity-80"
                 >
@@ -72,9 +73,7 @@ onMounted(loadProduct);
           <!-- Content Description -->
           <div class="p-6">
             <h2 class="text-lg font-medium text-gray-900 mb-4">Content Description</h2>
-            <div class="prose max-w-none">
-              {{ product.content?.description || 'No description available' }}
-            </div>
+            <div v-html="product.expand.content.description" class="prose max-w-none"></div>
           </div>
         </div>
       </template>

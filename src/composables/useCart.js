@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue';
 import { useLocalStorage } from '@vueuse/core';
+import { pb } from '../lib/pocketbase';
 
 export function useCart() {
   const items = useLocalStorage('cart-items', []);
@@ -13,6 +14,32 @@ export function useCart() {
   function addToCart(product) {
     if (!items.value.find(item => item.id === product.id)) {
       items.value.push(product);
+    }
+  }
+
+  async function checkoutSales(sdata) {
+    isLoading.value = true;
+    error.value = null;
+    
+    try {
+      await pb.collection('sales').create(sdata);
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function checkoutPurchases(pdata) {
+    isLoading.value = true;
+    error.value = null;
+    
+    try {
+      await pb.collection('purchases').create(pdata);
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -30,6 +57,8 @@ export function useCart() {
     isLoading,
     error,
     addToCart,
+    checkoutSales,
+    checkoutPurchases,
     removeFromCart,
     clearCart
   };

@@ -12,13 +12,14 @@ const { items: products, isLoading, error, fetchProducts } = useProducts();
 function handleNewProduct() {
   router.push({ name: 'NewProduct' });
 }
-console.log('product ',products);
-console.log('id', pb.authStore.model);
+//console.log('product ',products);
+
+//console.log('id', pb.authStore.model.id);
 
 // Filter products by user Id
 const filteredproducts = computed(() => {
   if (!products.value) return [];
-  return products.value.filter(product => product.creator === pb.authStore.model.id);
+  return products.value.filter(product => product.creatorid === pb.authStore.model.id);
 });
 
 onMounted(() => {

@@ -6,22 +6,18 @@ export function useSales() {
   const isLoading = ref(false);
   const error = ref(null);
   
-  const balance = computed(() => {
-    return sales.value.reduce((total, sale) => total + sale.amount, 0).toFixed(2);
-  });
-  
   const lastSevenDays = computed(() => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     
     return sales.value
       .filter(sale => new Date(sale.created) > sevenDaysAgo)
-      .reduce((total, sale) => total + sale.amount, 0)
+      .reduce((total, sale) => total + sale.price, 0)
       .toFixed(2);
   });
   
   const totalEarnings = computed(() => {
-    return sales.value.reduce((total, sale) => total + sale.amount, 0).toFixed(2);
+    return sales.value.reduce((total, sale) => total + sale.price, 0).toFixed(2);
   });
   
   async function fetchSales() {
@@ -33,7 +29,20 @@ export function useSales() {
         sort: '-created',
         expand: 'user,product,buyer',
       });
-      sales.value = response.items;
+      sales.value = response.items
+        .map(item => ({
+          id: item.id,
+          name: item.expand.product.name,
+          email: item.expand.buyer.email,
+          price: item.price,
+          created: item.created,
+          user: item.expand.user.id,
+        }))
+        .filter(filtersale => filtersale.user === pb.authStore.model.id);
+
+      //console.log('id',pb.authStore.model.id);
+      //console.log('response', response);
+      //console.log('sales', sales.value);
     } catch (err) {
       error.value = err.message;
     } finally {
@@ -43,7 +52,6 @@ export function useSales() {
   
   return {
     sales,
-    balance,
     lastSevenDays,
     totalEarnings,
     isLoading,

@@ -1,6 +1,7 @@
 <script setup>
 import { useCart } from '../composables/useCart';
 import { useRouter } from 'vue-router';
+import { pb } from '../lib/pocketbase';
 
 const props = defineProps({
   product: {
@@ -11,13 +12,14 @@ const props = defineProps({
 
 const { addToCart } = useCart();
 const router = useRouter();
+const baseUrl = 'http://127.0.0.1:8090/api/files/products/';
 
 function viewDetails() {
   router.push({ 
     name: 'ProductDetails', 
     params: { id: props.product.id } 
   });
-}
+};
 
 function handleAddToCart(event) {
   event.stopPropagation();
@@ -27,10 +29,10 @@ function handleAddToCart(event) {
 
 <template>
   <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-    <figure class="aspect-w-16 aspect-h-9 bg-gray-100">
+    <figure class="aspect-w-16 aspect-h-16 bg-gray-100">
       <img 
         v-if="product.thumbnail" 
-        :src="product.thumbnail" 
+        :src="`${baseUrl}${product.id}/${product.thumbnail}`" 
         :alt="product.name"
         class="img-fluid img-thumbnail"
       />
@@ -50,7 +52,7 @@ function handleAddToCart(event) {
           >
             Add to Cart
           </button>
-          <button 
+          <button
             @click="viewDetails"
             class="text-primary hover:text-opacity-80"
           >

@@ -16,7 +16,8 @@ export function useAuth() {
     
     try {
       localStorage.removeItem('pocketbase_auth');
-      console.log('Invalid PocketBase auth token cleared from localStorage.');
+      localStorage.removeItem('cart-items');
+      console.log('Invalid PocketBase auth token and cart item cleared from localStorage.');
       await pb.collection('users').authWithPassword(email, password);
     } catch (err) {
       error.value = err.message;

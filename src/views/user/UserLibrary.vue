@@ -5,6 +5,7 @@ import { useLibrary } from '../../composables/useLibrary';
 
 const router = useRouter();
 const { items: purchases, isLoading, error, fetchPurchases } = useLibrary();
+const baseUrl = 'http://127.0.0.1:8090/api/files/products/';
 
 function viewContent(productId) {
   router.push({ 
@@ -12,7 +13,7 @@ function viewContent(productId) {
     params: { id: productId } 
   });
 }
-console.log('lib',purchases);
+//console.log('library',purchases);
 onMounted(() => {
   fetchPurchases();
 });
@@ -51,13 +52,13 @@ onMounted(() => {
             <div class="flex items-center space-x-4">
               <img 
                 v-if="product.thumbnail"
-                :src="product.thumbnail"
+                :src="`${baseUrl}${product.id}/${product.thumbnail}`"
                 :alt="product.name"
                 class="w-16 h-16 object-cover rounded-lg"
               />
               <div>
                 <h3 class="font-medium text-gray-900">{{ product.name }}</h3>
-                <p class="text-sm text-gray-500">{{ product.description }}</p>
+                <p v-html="product.description" class="text-sm text-gray-500"></p>
               </div>
             </div>
             <button

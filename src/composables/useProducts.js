@@ -12,7 +12,20 @@ export function useProducts() {
     
     try {
       const response = await products.getAll();
-      items.value = response.items;
+      items.value = response.items
+        .map(item => ({
+          id: item.id,
+          category: item.category,
+          name: item.name,
+          thumbnail: item.thumbnail,
+          creator: item.expand.creator.name,
+          price: item.price,
+          creatorid: item.creator,
+          description: item.description,
+          contentid: item.content,
+        }));
+      //console.log('response ',response.items);
+      //console.log('items ',items.value);
     } catch (err) {
       error.value = err.message;
     } finally {

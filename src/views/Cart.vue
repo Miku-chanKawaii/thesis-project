@@ -1,12 +1,53 @@
 <script setup>
+import { ref, computed } from 'vue';
 import { useCart } from '../composables/useCart';
 import { useRouter } from 'vue-router';
+import { pb } from '../lib/pocketbase';
 
 const { items, total, removeFromCart, clearCart } = useCart();
 const router = useRouter();
+const baseUrl = 'http://127.0.0.1:8090/api/files/products/';
+const sdata = ref([""]);
+const pdata = ref([""]);
+const isLoading = ref(false);
+const error = ref(null);
 
-function handleCheckout() {
-  // Implement checkout logic here
+sdata.value = computed(() => {
+  return items.value.map(item => ({
+    user: item.creatorid,
+    product: item.id,
+    buyer: pb.authStore.model.id,
+    price: item.price,
+  }))
+});
+
+ pdata.value = computed(() => {
+  return items.value.map(item => ({
+    user: pb.authStore.model.id,
+    product: item.id,
+    content: item.contentid,
+  }))
+});
+
+
+
+async function handleCheckout() {
+  isLoading.value = true;
+  error.value = null;
+
+  pb.autoCancellation(false);
+  try {
+    sdata.value.value.forEach(async (item) => {
+      await pb.collection('sales').create(item);
+    });
+    pdata.value.value.forEach(async (item) => {
+      await pb.collection('purchases').create(item);
+    });
+    } catch (err) {
+      error.value = err.message;
+    } finally {
+      isLoading.value = false;
+    };
   clearCart();
   router.push('/user/library');
 }
@@ -36,13 +77,13 @@ function handleCheckout() {
             class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4"
           >
             <img 
-              :src="item.thumbnail" 
+              :src="`${baseUrl}${item.id}/${item.thumbnail}`" 
               :alt="item.name"
               class="w-20 h-20 object-cover rounded-lg"
             />
             <div class="flex-1">
               <h3 class="font-medium text-gray-900">{{ item.name }}</h3>
-              <p class="text-gray-500">{{ item.description }}</p>
+              <p v-html="item.description" class="text-gray-500"></p>
             </div>
             <div class="text-right">
               <p class="font-bold">${{ item.price }}</p>
