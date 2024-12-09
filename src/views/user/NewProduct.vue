@@ -21,6 +21,8 @@ const productData = ref({
   },
 });
 
+
+
 async function handleSubmit() {
   try {
     await createProduct(productData.value);

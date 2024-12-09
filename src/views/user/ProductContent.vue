@@ -13,7 +13,7 @@ const product = ref(null);
 
 async function loadProduct() {
   try {
-    product.value = await pb.collection('products').getOne('do34efk0fb31xuw', {
+    product.value = await pb.collection('products').getOne('ozh8yi9omr1fpbr', {
       expand: 'content'
     });
   } catch (err) {

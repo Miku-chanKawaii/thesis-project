@@ -18,7 +18,7 @@ const isMenuOpen = ref(false);
           <router-link to="/discover" class="text-gray-600 hover:text-black">Discover</router-link>
           <router-link to="/search" class="text-gray-600 hover:text-black">Search</router-link>
           <router-link to="/cart" class="text-gray-600 hover:text-black">Cart</router-link>
-          <router-link to="/test" class="text-gray-600 hover:text-black">Test</router-link>
+          <!--<router-link to="/test" class="text-gray-600 hover:text-black">Test</router-link>-->
         </div>
       </div>
       

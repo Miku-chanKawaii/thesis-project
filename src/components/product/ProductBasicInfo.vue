@@ -52,6 +52,7 @@ function handleThumbnailChange(event) {
   const file = event.target.files[0];
   if (file) {
     thumbnail.value = file;
+    avatarPreview.value = URL.createObjectURL(file); // Set the preview
   }
 }
 </script>
@@ -67,7 +68,7 @@ function handleThumbnailChange(event) {
         >
           <img
             v-if="thumbnail"
-            :src="typeof thumbnail === 'string' ? thumbnail : URL.createObjectURL(thumbnail)"
+            :src="avatarPreview  || 'gum-logo.png'"
             alt="Thumbnail preview"
             class="w-full h-full object-cover"
           />

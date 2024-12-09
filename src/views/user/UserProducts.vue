@@ -12,7 +12,7 @@ const { items: products, isLoading, error, fetchProducts } = useProducts();
 function handleNewProduct() {
   router.push({ name: 'NewProduct' });
 }
-//console.log('product ',products);
+console.log('product ',products);
 
 //console.log('id', pb.authStore.model.id);
 
